@@ -1,12 +1,14 @@
 /*
   fontsAndColors.h
 
-  Define color shortcut symbols and pointers to fonts imported from the library.
+  Define color shortcut symbols.
+
+  Define Font_TT objects pointing to fonts imported from the GFX font library.
   Several fonts are included, even though we may not use most of them. Unused
   ones can be removed them later if needed.
 */
 #include <Arduino.h>
-#include <Adafruit_GFX.h>
+#include <Font_TT.h>
 
 // Define the colors without the ILI9341_ prefix.
 #define BLACK         ILI9341_BLACK
@@ -30,20 +32,20 @@
 #define PINK          ILI9341_PINK
 #define CLEAR         TRANSPARENT_COLOR
 
-// Pointers to imported fonts.
-extern const GFXfont* mono12B;
-extern const GFXfont* font9;
-extern const GFXfont* font12;
-extern const GFXfont* font18;
-extern const GFXfont* font24;
-extern const GFXfont* font9B;
-extern const GFXfont* font12B;
-extern const GFXfont* font18B;
-extern const GFXfont* font24B;
-//extern const GFXfont* fontOrg;
-//extern const GFXfont* fontPico;
-//extern const GFXfont* fontTiny;
-extern const GFXfont* fontTom;
+// Pointers to font objects for imported fonts.
+extern Font_TT mono12B;
+extern Font_TT font9;
+extern Font_TT font12;
+extern Font_TT font18;
+extern Font_TT font24;
+extern Font_TT font9B;
+extern Font_TT font12B;
+extern Font_TT font18B;
+extern Font_TT font24B;
+//extern Font_TT fontOrg;
+//extern Font_TT fontPico;
+//extern Font_TT fontTiny;
+extern Font_TT fontTom;
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 // End.

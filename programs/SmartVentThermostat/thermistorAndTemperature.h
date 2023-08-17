@@ -189,9 +189,9 @@
 // converter functions, and define it as 1 to instead use those in
 // analogRead_SAMD_TT.h/cpp. The latter allows for using D4, D5, D6, and D7 as
 // analog inputs, and fixes some errors in the module. This is REQUIRED when
-// calibrating the ADC with module calibADC_gain_offset_withPWM.
+// calibrating the ADC with module calibSAMD_ADC_withPWM.
 // If this is set to 0, you must provide code that is currently located in
-// calibADC_gain_offset_withPWM.cpp:
+// calibSAMD_ADC_withPWM.cpp:
 //    1. Define PIN_AREF_OUT and set its pinMode and initially turn it off.
 //    2. Select external voltage reference for the ADC.
 //    3. Select 12-bit ADC resolution.
@@ -199,7 +199,7 @@
 //    5. Configure multiple sampling and averaging, if desired.
 // The actual pin numbers used by this module are set in the .cpp file definitions of
 // IndoorThermistor and OutdoorThermistor, as well as in the constants defined in
-// calibADC_gain_offset_withPWM.h.
+// calibSAMD_ADC_withPWM.h.
 #define USE_ANALOG_SAMD 1
 
 // Number of temperature readings to buffer and compute running average, for reduction of
@@ -217,9 +217,14 @@
 // may have considerable capacitance. On mine a scope shows 1 ms is too little.
 #define AREF_STABLE_DELAY 3
 
-// Force outdoor temperature to this value in °C, for debugging. Set this to 9999 to not
-// do this and use the measured outdoor temperature.
-#define FORCE_OUTDOOR_TEMP 9999
+// Force indoor or outdoor temperature to this value in °C, for debugging. Set these to 9999
+// to not do this and use the measured temperature. Note: 30°C = 86°F.
+#define FORCE_INDOOR_TEMP   9999
+#define FORCE_OUTDOOR_TEMP  9999
+
+// Offset in °C to apply to FORCE_INDOOR_TEMP or FORCE_OUTDOOR_TEMP during initialization of
+// temperatures in the temperature buffer. Used only when they are not 9999. Note: 10°C = 18°F.
+#define DEBUG_TEMP_OFFSET   (-10)
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 // Structs.
@@ -297,16 +302,24 @@ extern float TlastOutdoorTempRead;
 /////////////////////////////////////////////////////////////////////////////////////////////
 // Initialize for reading indoor and outdoor temperatures. Currently this also initializes
 // the ADC converter, which is currently used in this project only for reading thermistors.
-// Argument periodicallyCall is a pointer to function to call during periods of long activity
-// (e.g. watchdog timer reset function), NULL for none.
+// Arguments:
+//  pinADC_CALIB: pin number of analog input connected to calibration capacitor.
+//  pinPWM_CALIB: pin number of TCC output connected to calibration resistor.
+//  pinAREF_OUT: pin number of digital output connected to AREF.
+//  cfgADCmultSampAvg: multi-sample averaging, 0 = disabled, n = 2^n samples are averaged.
+//  periodicallyCall: pointer to function to call during periods of long activity
+//    (e.g. watchdog timer reset function), nullptr for none.
 /////////////////////////////////////////////////////////////////////////////////////////////
-extern void initReadTemperature(void (*periodicallyCall)() = NULL);
+extern void initReadTemperature(int pinADC_CALIB, int pinPWM_CALIB, int pinAREF_OUT,
+  uint8_t cfgADCmultSampAvg, void (*periodicallyCall)());
 
 /////////////////////////////////////////////////////////////////////////////////////////////
-// Convert degrees C to degrees F and vice-versa.
+// Convert degrees C to degrees F, and degrees C to degrees K, and vice-versa.
 /////////////////////////////////////////////////////////////////////////////////////////////
 inline float degCtoF(float TC) { return(TC*9.0/5.0+32.0); }
 inline float degFtoC(float TF) { return((TF-32.0)*5.0/9.0); }
+inline float degCtoK(float TC) { return(TC+273.15); }
+inline float degKtoC(float TK) { return(TK-273.15); }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 // Compute rounded version of a floating point temperature value (rounded to an integer).
@@ -318,12 +331,12 @@ inline float degFtoC(float TF) { return((TF-32.0)*5.0/9.0); }
 // hovers near the boundary between two integers. This is accomplished by using knowledge
 // of what direction the temperature has been running, which is why the goingUp argument is
 // required. In normal rounding, if the fraction part is < 0.5 we would round down, and if
-// >= 0.5 we round up. With hysteris, the threshold of 0.5 is changed by either adding or
+// >= 0.5 we round up. With hysteresis, the threshold of 0.5 is changed by either adding or
 // subtracting one half of a hysteresis value (TEMP_HYST_C or TEMP_HYST_F depending on
-// isCelsius, both defined in the .h file).
+// isCelsius, both defined above), subtracting when goingUp is true and adding when false.
 //
 // As an example, if the hysteresis is 0.25, then half of that is 0.125. When goingUp
-// is TRUE, the threshold for rounding is 0.5 - 0.125 = 0.375. Say the rounded temperature
+// is true, the threshold for rounding is 0.5 - 0.125 = 0.375. Say the rounded temperature
 // is 70. Then it will increase to 71 at 70.375 and it will decrease to 69 at 69.374.
 // Suppose the reading is 69.374, so this is rounded to 69, and goingUp now becomes false.
 // The new threshold is now 0.5 + 0.125 = 0.625. The rounded temperature will now
@@ -364,6 +377,7 @@ extern void readTemperature(const thermistor& Thermistor, temperature& Temp, boo
 // from the input temperatures to the output temperatures.
 //
 // This returns the new temperature that was read (in Celsius) and added to the buffer.
+// On return, Temp contains the new average temperatures.
 /////////////////////////////////////////////////////////////////////////////////////////////
 extern float readTemperatureRunningAverage(const thermistor& Thermistor,
   temperatureBuf& TempBuf, temperature& Temp, bool turnAREFoff=true);

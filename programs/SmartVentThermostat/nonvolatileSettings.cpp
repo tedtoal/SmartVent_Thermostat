@@ -31,15 +31,16 @@ nonvolatileSettings activeSettings;
 nonvolatileSettings userSettings;
 
 // The default settings, used to initialize empty flash-based EEPROM.
-const nonvolatileSettings settingDefaults = {
+nonvolatileSettings settingDefaults = {
   MODE_OFF,   // SmartVentMode: SmartVent mode
-  78,         // TempSetpointOn: Indoor temperature setpoint in °F for SmartVent to turn on.
-  7,          // DeltaTempForOn: °F indoor must exceed outdoor temperature to turn on SmartVent.
-  3,          // HysteresisWidth: Hysteresis °F, band around TempSetpointOn and DeltaTempForOn to turn on/off.
+  76,         // TempSetpointOn: Indoor temperature setpoint in °F for SmartVent to turn on.
+  6,          // DeltaTempForOn: °F indoor must exceed outdoor temperature to turn on SmartVent.
+  2,          // HysteresisWidth: Hysteresis °F, band around TempSetpointOn and DeltaTempForOn to turn on/off.
   4,          // MaxRunTimeHours: Run time limit in hours in AUTO mode, 0 = none
-  1,          // DeltaArmTemp: °F outdoor must exceed indoor temperature to rearm SmartVent for the next day.
+  1,          // DeltaNewDayTemp: °F outdoor must exceed indoor temperature to start a new day (run timer is cleared).
   0,          // IndoorOffsetF: Amount to add to measured indoor temperature in °F to get temperature to display.
-  0           // OutdoorOffsetF: Amount to add to measured outdoor temperature in °F to get temperature to display.
+  0,          // OutdoorOffsetF: Amount to add to measured outdoor temperature in °F to get temperature to display.
+  0,0,0,0     // Touchscreen calibration parameter defaults are set by caller.
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////

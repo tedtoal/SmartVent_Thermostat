@@ -17,19 +17,19 @@
 //#include <Fonts/Tiny3x3a2pt7b.h>
 #include <Fonts/TomThumb.h>
 
-const GFXfont* mono12B = &FreeMonoBold12pt7b;
-const GFXfont* font9 = &FreeSans9pt7b;
-const GFXfont* font12 = &FreeSans12pt7b;
-const GFXfont* font18 = &FreeSans18pt7b;
-const GFXfont* font24 = &FreeSans24pt7b;
-const GFXfont* font9B = &FreeSansBold9pt7b;
-const GFXfont* font12B = &FreeSansBold12pt7b;
-const GFXfont* font18B = &FreeSansBold18pt7b;
-const GFXfont* font24B = &FreeSansBold24pt7b;
-//const GFXfont* fontOrg = &Org_01;
-//const GFXfont* fontPico = &Picopixel;
-//const GFXfont* fontTiny = &Tiny3x3a2pt7b;
-const GFXfont* fontTom = &TomThumb;
+Font_TT mono12B(&FreeMonoBold12pt7b);
+Font_TT font9(&FreeSans9pt7b);
+Font_TT font12(&FreeSans12pt7b);
+Font_TT font18(&FreeSans18pt7b);
+Font_TT font24(&FreeSans24pt7b);
+Font_TT font9B(&FreeSansBold9pt7b);
+Font_TT font12B(&FreeSansBold12pt7b);
+Font_TT font18B(&FreeSansBold18pt7b);
+Font_TT font24B(&FreeSansBold24pt7b);
+//Font_TT fontOrg(&Org_01);
+//Font_TT fontPico(&Picopixel);
+//Font_TT fontTiny(&Tiny3x3a2pt7b);
+Font_TT fontTom(&TomThumb);
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 // End.

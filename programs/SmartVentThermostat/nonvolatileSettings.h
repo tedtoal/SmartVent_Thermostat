@@ -37,9 +37,6 @@
 // time limit.
 #define MAX_DELTA_ARM_TEMP 20
 
-// String to show on LCD when max run time is 0.
-#define MAX_RUN_TIME_0 "--"
-
 // Maximum temperature calibration adjustment in degrees F. Minimum is negative of this.
 #define MAX_TEMP_CALIB_DELTA 9
 
@@ -61,12 +58,16 @@ struct nonvolatileSettings {
   uint8_t DeltaTempForOn;       // Indoor temperature must exceed outdoor by this to turn on SmartVent.
   uint8_t HysteresisWidth;      // Hysteresis °F, band around TempSetpointOn and DeltaTempForOn to turn on/off.
   uint8_t MaxRunTimeHours;      // Run time limit in hours (AUTO or ON mode, AUTO is cumulative), 0 = none
-  uint8_t DeltaArmTemp;         // Outdoor temperature must exceed indoor by this to rearm SmartVent for next day.
+  uint8_t DeltaNewDayTemp;      // Outdoor temperature must exceed indoor by this to start a new day (run timer is cleared).
   // Note: Following two values are NOT incorporated into temperatures read by thermistorAndTemperature library.
   // Instead, they are only used to adjust curIndoorTemperature and curOutdoorTemperature before they are used in
   // SmartVentThermostat.ino.
   int8_t IndoorOffsetF;         // Amount to add to measured indoor temperature in °F to get temperature to display.
   int8_t OutdoorOffsetF;        // Amount to add to measured outdoor temperature in °F to get temperature to display.
+  int16_t TS_LR_X;              // Touchscreen calibration parameter 1.
+  int16_t TS_LR_Y;              // Touchscreen calibration parameter 2.
+  int16_t TS_UL_X;              // Touchscreen calibration parameter 3.
+  int16_t TS_UL_Y;              // Touchscreen calibration parameter 4.
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -84,7 +85,8 @@ extern nonvolatileSettings activeSettings;
 extern nonvolatileSettings userSettings;
 
 // The default settings, used to initialize empty flash-based EEPROM.
-extern const nonvolatileSettings settingDefaults;
+// Touchscreen calibration parameters are 0 and must be set by caller.
+extern nonvolatileSettings settingDefaults;
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 // Functions.
