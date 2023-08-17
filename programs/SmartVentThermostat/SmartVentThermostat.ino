@@ -11,8 +11,8 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <Arduino.h>
+#include <monitor_printf.h>
 #include <SPI.h>
-#include <monitor_printf.h>     // #define MONITOR in monitor_printf.h to disable the module when no USB port is being used (live thermostat)
 #include <wdt_samd21.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_ILI9341.h>
@@ -26,14 +26,21 @@
 #include <Ted_Button_int16.h>
 #include <Ted_ArrowButton.h>
 #include <Ted_Button_Collection.h>
+
+// Define this as 1 to use the_monitor_printf object for debug output.
+// Define this as 0 when running in final system with no USB port.
+// This is defined before including our local include files, which may refer to
+// this value.
+#define USE_MONITOR_PRINTF 1
+
 #include "fontsAndColors.h"
 #include "thermistorAndTemperature.h"
 #include "nonvolatileSettings.h"
 #include "touchscreen.h"
 
 // Default for _PWM_LOGLEVEL_ if not defined is 1, SAMD_PWM tries to log stuff to serial monitor.
-// If MONITOR is defined as 0, we define _PWM_LOGLEVEL_ as 0 too.
-#if MONITOR
+// If USE_MONITOR_PRINTF is defined as 0, we define _PWM_LOGLEVEL_ as 0 too.
+#if USE_MONITOR_PRINTF
 #define _PWM_LOGLEVEL_ 1
 #else
 #define _PWM_LOGLEVEL_ 0
@@ -192,7 +199,7 @@ static uint32_t RunTimeMS;
 //  ARM_AUTO_ON: occurs when state is ARM_AWAIT_ON and indoor temperature becomes
 //    >= SmartVent setpoint temperature and outdoor temperature becomes <= indoor
 //    temperature - DeltaTempForOn. At that time, SmartVent is turned ON and a
-//    run-time timer is started. 
+//    run-time timer is started.
 //  ARM_AWAIT_HOT occurs when the state is ARM_AUTO_ON and a maximum SmartVent
 //    run time is set and the SmartVent run timer reaches that value. At that time,
 //    SmartVent is turned off. Exit from this state to ARM_AWAIT_ON when outdoor
@@ -237,7 +244,7 @@ static void drawDebugScreen();
 void setArmState(eArmState newState) {
   if (ArmState != newState) {
     ArmState = newState;
-    monitor_printf("ArmState changed to %d\n", ArmState);
+    monitor.printf("ArmState changed to %d\n", ArmState);
   }
 }
 
@@ -275,7 +282,7 @@ static Ted_Button btn_Advanced("Advanced");
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 // Initialize above buttons. Don't use constructor to init because can't use
-// monitor_printf() inside button initButton() function then, since monitor is
+// monitor.printf() inside button initButton() function then, since monitor is
 // not initialized until setup().
 /////////////////////////////////////////////////////////////////////////////////////////////
 static void initButtons_MainScreen(void) {
@@ -400,7 +407,7 @@ static void showHideSmartVentArmStateButton(bool forceDraw = false) {
       break;
     default:
       S = "Error";
-      monitor_printf("ArmState is %d, wrong!\n", ArmState);
+      monitor.printf("ArmState is %d, wrong!\n", ArmState);
       break;
     }
     btn_ArmState.setLabelAndDrawIfChanged(S, forceDraw);
@@ -564,7 +571,7 @@ static Ted_Button btn_SettingsSave("SettingsSave");
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 // Initialize above buttons. Don't use constructor to init because can't use
-// monitor_printf() inside button initButton() function then, since monitor is
+// monitor.printf() inside button initButton() function then, since monitor is
 // not initialized until setup().
 /////////////////////////////////////////////////////////////////////////////////////////////
 static void initButtons_SettingsScreen(void) {
@@ -682,14 +689,14 @@ static void drawSettingsScreen() {
   btn_DeltaTempForOnRight.drawButton();
   screenButtons->registerButton(btn_DeltaTempForOnLeft, btnPress_DeltaTempForOn);
   screenButtons->registerButton(btn_DeltaTempForOnRight, btnPress_DeltaTempForOn);
-  
+
   label_Hysteresis1.drawButton();
   label_Hysteresis2.drawButton();
   btn_HysteresisWidthLeft.drawButton();
   btn_HysteresisWidthRight.drawButton();
   screenButtons->registerButton(btn_HysteresisWidthLeft, btnPress_HysteresisWidth);
   screenButtons->registerButton(btn_HysteresisWidthRight, btnPress_HysteresisWidth);
-  
+
   showTemperatureDifferentials(true);
 
   lcd->drawRoundRect(2, 209, 236, 53, 5, BLACK);
@@ -816,7 +823,7 @@ static Ted_Button btn_AdvancedSave("AdvancedSave");
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 // Initialize above buttons. Don't use constructor to init because can't use
-// monitor_printf() inside button initButton() function then, since monitor is
+// monitor.printf() inside button initButton() function then, since monitor is
 // not initialized until setup().
 /////////////////////////////////////////////////////////////////////////////////////////////
 static void initButtons_AdvancedScreen(void) {
@@ -1038,7 +1045,7 @@ static Ted_Button label_NoActivity("NoActivity");
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 // Initialize above buttons. Don't use constructor to init because can't use
-// monitor_printf() inside button initButton() function then, since monitor is
+// monitor.printf() inside button initButton() function then, since monitor is
 // not initialized until setup().
 /////////////////////////////////////////////////////////////////////////////////////////////
 static void initButtons_CleaningScreen(void) {
@@ -1106,7 +1113,7 @@ static uint16_t lastReadCount_DebugArea;
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 // Initialize above buttons. Don't use constructor to init because can't use
-// monitor_printf() inside button initButton() function then, since monitor is
+// monitor.printf() inside button initButton() function then, since monitor is
 // not initialized until setup().
 /////////////////////////////////////////////////////////////////////////////////////////////
 static void initButtons_DebugScreen(void) {
@@ -1154,7 +1161,7 @@ static void updateDebugScreen() {
   // Don't turn off backlight in debug mode.
   MSsinceLastTouchBeforeBacklight = 0;
 }
-    
+
 /////////////////////////////////////////////////////////////////////////////////////////////
 // Draw the Debug screen and register its buttons with the global screenButtons object.
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -1220,7 +1227,7 @@ void processTouchesAndReleases() {
   // When screen is not being touched or uncertain, update no-touch-since timers for backlight and settings activation.
   case TS_NO_TOUCH:
   case TS_UNCERTAIN:
-    //monitor_printf("released\n");
+    //monitor.printf("released\n");
 
     // Update the LCD backlight timer when screen is not being touched.
     // When backlight is turned off, we also exit the Cleaning screen if we are in it.
@@ -1243,7 +1250,7 @@ void processTouchesAndReleases() {
   // As long as a touch is present, keep MSsinceLastTouchBeforeBacklight and
   // MSsinceLastTouchBeforeUserSettingsActivated zeroed.
   case TS_TOUCH_PRESENT:
-    //monitor_printf("pressed\n");
+    //monitor.printf("pressed\n");
     MSsinceLastTouchBeforeBacklight = 0;
     MSatLastBacklightTimerUpdate = millis();
     MSsinceLastTouchBeforeUserSettingsActivated = 0;
@@ -1252,7 +1259,7 @@ void processTouchesAndReleases() {
 
   // Touch events turn on the backlight if off, else are processed as possible screen button presses.
   case TS_TOUCH_EVENT:
-    //monitor_printf("Button press: %d,%d pres=%d   isPressed: %d\n", x, y, pres, btn_OffAutoOn.isPressed());
+    //monitor.printf("Button press: %d,%d pres=%d   isPressed: %d\n", x, y, pres, btn_OffAutoOn.isPressed());
     if (digitalRead(LCD_BACKLIGHT_LED) == LCD_BACKLIGHT_OFF)
       digitalWrite(LCD_BACKLIGHT_LED, LCD_BACKLIGHT_ON);
     else
@@ -1262,7 +1269,7 @@ void processTouchesAndReleases() {
   // Release events zero MSsinceLastTouchBeforeBacklight and MSsinceLastTouchBeforeUserSettingsActivated,
   // and are registered as a screen button release.
   case TS_RELEASE_EVENT:
-    //monitor_printf("Button release   isPressed: %d\n", btn_OffAutoOn.isPressed());
+    //monitor.printf("Button release   isPressed: %d\n", btn_OffAutoOn.isPressed());
     MSsinceLastTouchBeforeBacklight = 0;
     MSatLastBacklightTimerUpdate = millis();
     MSsinceLastTouchBeforeUserSettingsActivated = 0;
@@ -1352,7 +1359,7 @@ void updateActiveSettings() {
     if (MSsinceLastTouchBeforeUserSettingsActivated >= USER_ACTIVITY_DELAY_MS) {
       MSsinceLastTouchBeforeUserSettingsActivated = USER_ACTIVITY_DELAY_MS;
       writeNonvolatileSettingsIfChanged(userSettings);
-      //monitor_printf("Wrote settings to non-volatile memory\n");
+      //monitor.printf("Wrote settings to non-volatile memory\n");
       activeSettings = userSettings; // User settings become the active settings.
       updateArmState();
     }
@@ -1415,7 +1422,7 @@ void updateSmartVentRunTimer(void) {
         // state exits ARM_AWAIT_HOT.
         if (activeSettings.SmartVentMode == MODE_AUTO) {
           setArmState(ARM_AWAIT_HOT);
-          monitor_printf("Timer expire while running, set to AWAIT_HOT\n");
+          monitor.printf("Timer expire while running, set to AWAIT_HOT\n");
 
         // Else mode is ON. Forcibly change it to OFF. Change both userSettings and
         // activeSettings and store settings in non-volatile memory. This is currently the
@@ -1466,7 +1473,7 @@ void checkSmartVentOnOffConditions(void) {
     float indoorTempAdjusted = curIndoorTemperature.Tf + (float)activeSettings.IndoorOffsetF;
     float outdoorTempAdjusted = curOutdoorTemperature.Tf + (float)activeSettings.OutdoorOffsetF;
     float halfHysteresis = (float)activeSettings.HysteresisWidth / 2;
-    
+
     // If SmartVent is off and ArmState is ARM_AWAIT_ON and MaxRunTimeMS is 0 or is greater than
     // RunTimeMS, evaluate whether or not to turn SmartVent on.
     if (!smartVentOn && ArmState == ARM_AWAIT_ON && (MaxRunTimeMS == 0 || MaxRunTimeMS > RunTimeMS)) {
@@ -1517,12 +1524,12 @@ void checkSmartVentOnOffConditions(void) {
 // *************************************************************************************** //
 void setup() {
   // Initialize for using the Arduino IDE serial monitor.
-  monitor_init(115200);
+  monitor.begin(USE_MONITOR_PRINTF);
 
   // Initialize watchdog timer. It must be reset every 16K clock cycles. Does this mean the
   // main system clock?  And what is it running at?  Actually, testing shows that it is
   // 16K MILLISECONDS.  We'll use two seconds.
-  #if MONITOR == 0
+  #if USE_MONITOR_PRINTF == 0
   wdt_init(WDT_CONFIG_PER_2K);
   #endif
 

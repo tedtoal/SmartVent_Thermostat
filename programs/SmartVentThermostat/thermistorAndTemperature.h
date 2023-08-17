@@ -185,10 +185,11 @@
 // Constants.
 /////////////////////////////////////////////////////////////////////////////////////////////
 
-// Define this as 0 to use the usual Arduino Nano 33 IoT analog/digital converter functions,
-// and define it as 1 to instead use those in analogRead_D4567.h/cpp. The latter allows for
-// using D4, D5, D6, and D7 as analog inputs, and fixes some errors in the module. This is
-// REQUIRED when calibrating the ADC with module calibADC_gain_offset_withPWM.
+// Define this as 0 to use the usual Arduino Nano 33 IoT analog/digital
+// converter functions, and define it as 1 to instead use those in
+// analogRead_SAMD_TT.h/cpp. The latter allows for using D4, D5, D6, and D7 as
+// analog inputs, and fixes some errors in the module. This is REQUIRED when
+// calibrating the ADC with module calibADC_gain_offset_withPWM.
 // If this is set to 0, you must provide code that is currently located in
 // calibADC_gain_offset_withPWM.cpp:
 //    1. Define PIN_AREF_OUT and set its pinMode and initially turn it off.
@@ -199,7 +200,7 @@
 // The actual pin numbers used by this module are set in the .cpp file definitions of
 // IndoorThermistor and OutdoorThermistor, as well as in the constants defined in
 // calibADC_gain_offset_withPWM.h.
-#define USE_ANALOG_D4567 1
+#define USE_ANALOG_SAMD 1
 
 // Number of temperature readings to buffer and compute running average, for reduction of
 // jitter in thermistor readings.  Note: we also enable the ADC converter to internally

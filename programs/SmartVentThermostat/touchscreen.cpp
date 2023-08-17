@@ -2,8 +2,8 @@
   touchscreen.cpp
 */
 #include <XPT2046_Touchscreen.h>
+#include <monitor_printf.h>
 #include "touchscreen.h"
-#include "monitor_printf.h"
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 // Constants.
@@ -14,7 +14,6 @@
 #define TOUCH_IRQ         A7
 
 // Touchscreen parameters.
-#define HAVE_TOUCHPAD
 #define MIN_TOUCH_PRESSURE    5  // Minimum required force for touch event
 #define MAX_RELEASE_PRESSURE  0  // Maximum allowed force for release event
 #define TS_MIN_LONG   300
@@ -84,7 +83,7 @@ eTouchEvent getTouchEvent(int16_t& x, int16_t& y, int16_t& pres, int16_t* px, in
     y = map(p.y, TS_MIN_LONG, TS_MAX_LONG, 0, 320);
   }
   pres = p.z;
-  
+
   bool currentTSeventIsTouch = lastTSeventWasTouch;
   if (pres >= MIN_TOUCH_PRESSURE) {
     currentTSeventIsTouch = true;
@@ -99,7 +98,7 @@ eTouchEvent getTouchEvent(int16_t& x, int16_t& y, int16_t& pres, int16_t* px, in
     msTime = millis();
     return(ret);
   }
-  
+
   // A change since the last event has occurred, don't register it until debounce timer has expired.
   if (millis() - msTime < TS_DEBOUNCE_MS)
     return(ret);
@@ -117,10 +116,10 @@ void showTouchesAndReleases() {
   int16_t x, y, pres;
   switch (getTouchEvent(x, y, pres)) {
     case TS_TOUCH_EVENT:
-      monitor_printf("Touch at %d,%d\n", x, y);
+      monitor.printf("Touch at %d,%d\n", x, y);
       break;
     case TS_RELEASE_EVENT:
-      monitor_printf("Release\n");
+      monitor.printf("Release\n");
       break;
   }
 }

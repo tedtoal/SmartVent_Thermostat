@@ -5,8 +5,8 @@
 #include <floatToString.h>
 #include <monitor_printf.h>
 #include "thermistorAndTemperature.h"
-#if USE_ANALOG_D4567
-#include <analog_D4567.h>
+#if USE_ANALOG_SAMD
+#include <wiring_analog_SAMD_TT.h>
 #endif
 #include <calibADC_gain_offset_withPWM.h>
 
@@ -15,7 +15,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 // Thermistor parameters.
-#if USE_ANALOG_D4567
+#if USE_ANALOG_SAMD
 // Note: AZ Touch MKR A4 is Nano 33 IoT A1
 //const thermistor IndoorThermistor = { A1, 10000, 0.001009, 0.0002378, 2.0192e-07 }; // Frequent sample code values for Arduino kit thermistor
 //const thermistor IndoorThermistor = { A1, 10000, 0.001237, 0.000216, 1.634e-07 }; // Chinese data sheet for Arduino kit thermistor
@@ -64,7 +64,7 @@ void initReadTemperature(void (*periodicallyCall)()) {
   // First, run a calibration algorithm on the ADC to compute ADC gain and offset constants
   // and load them into the ADC.
   // NOTE: 12-bit ADC resolution is set.
-  fixADC_GainOffset();
+  calibSAMD_ADC_withPWM();
 
   // Initialize pins.
   pinMode(IndoorThermistor.inputPin, INPUT);
@@ -123,9 +123,9 @@ void readTemperature(const thermistor& Thermistor, temperature& Temp, bool turnA
   }
 
   // Read ADC input.
-  #if USE_ANALOG_D4567
+  #if USE_ANALOG_SAMD
   // Use our revised analogRead() so we can read from D4.
-  uint16_t Vo = analogRead_D4567(Thermistor.inputPin);
+  uint16_t Vo = analogRead_SAMD_TT(Thermistor.inputPin);
   #else
   uint16_t Vo = analogRead(Thermistor.inputPin);
   #endif
@@ -228,7 +228,7 @@ void showTemperature(const temperature Temp, char* Desc) {
   char TfS[9], TcS[9];
   floatToString(Temp.Tf, TfS, sizeof(TfS), 1);
   floatToString(Temp.Tc, TcS, sizeof(TcS), 1);
-  monitor_printf("%s Temperature: %s°F  %s°C   Rthermistor: %ld\n", Desc, TfS, TcS, Temp.Rthermistor);
+  monitor.printf("%s Temperature: %s°F  %s°C   Rthermistor: %ld\n", Desc, TfS, TcS, Temp.Rthermistor);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
