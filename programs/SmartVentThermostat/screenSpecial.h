@@ -1,6 +1,5 @@
 /*
-  fontsAndColors.cpp - Define Font_TT objects pointing to fonts imported from
-  the GFX font library.
+  screenSpecial.h - Definitions for SmartVent Thermostat special screen.
   Created by Ted Toal, 17-Aug-2023
   Released into the public domain.
 
@@ -32,36 +31,26 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#include "fontsAndColors.h"
+#ifndef screenSpecial_h
+#define screenSpecial_h
 
-#include <Fonts/FreeMonoBold12pt7b.h>
-#include <Fonts/FreeSans9pt7b.h>
-#include <Fonts/FreeSans12pt7b.h>
-#include <Fonts/FreeSans18pt7b.h>
-#include <Fonts/FreeSans24pt7b.h>
-#include <Fonts/FreeSansBold9pt7b.h>
-#include <Fonts/FreeSansBold12pt7b.h>
-#include <Fonts/FreeSansBold18pt7b.h>
-#include <Fonts/FreeSansBold24pt7b.h>
-//#include <Fonts/Org_01.h>
-//#include <Fonts/Picopixel.h>
-//#include <Fonts/Tiny3x3a2pt7b.h>
-#include <Fonts/TomThumb.h>
-
-Font_TT mono12B(&FreeMonoBold12pt7b);
-Font_TT font9(&FreeSans9pt7b);
-Font_TT font12(&FreeSans12pt7b);
-Font_TT font18(&FreeSans18pt7b);
-Font_TT font24(&FreeSans24pt7b);
-Font_TT font9B(&FreeSansBold9pt7b);
-Font_TT font12B(&FreeSansBold12pt7b);
-Font_TT font18B(&FreeSansBold18pt7b);
-Font_TT font24B(&FreeSansBold24pt7b);
-//Font_TT fontOrg(&Org_01);
-//Font_TT fontPico(&Picopixel);
-//Font_TT fontTiny(&Tiny3x3a2pt7b);
-Font_TT fontTom(&TomThumb);
+// *************************************************************************************** //
+// Functions.
+// *************************************************************************************** //
 
 /////////////////////////////////////////////////////////////////////////////////////////////
-// End.
+// Initialize the special screen.
 /////////////////////////////////////////////////////////////////////////////////////////////
+extern void initSpecialScreen();
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+// Draw the special screen and register its buttons with the screenButtons object.
+/////////////////////////////////////////////////////////////////////////////////////////////
+extern void drawSpecialScreen();
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+// Perform loop() function processing for the special screen when it is displayed.
+/////////////////////////////////////////////////////////////////////////////////////////////
+extern void loopSpecialScreen();
+
+#endif // screenSpecial_h

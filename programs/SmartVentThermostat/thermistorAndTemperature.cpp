@@ -1,5 +1,36 @@
 /*
   thermistorAndTemperature.cpp
+  thermistorAndTemperature.cpp - Define variables and functions to support the
+  reading of indoor and outdoor temperatures from indoor and outdoor thermistors.
+  Created by Ted Toal, 17-Aug-2023
+  Released into the public domain.
+
+
+  Software License Agreement (BSD License)
+
+  Copyright (c) 2023 Ted Toal
+  All rights reserved.
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are met:
+  1. Redistributions of source code must retain the above copyright
+  notice, this list of conditions and the following disclaimer.
+  2. Redistributions in binary form must reproduce the above copyright
+  notice, this list of conditions and the following disclaimer in the
+  documentation and/or other materials provided with the distribution.
+  3. Neither the name of the copyright holders nor the
+  names of its contributors may be used to endorse or promote products
+  derived from this software without specific prior written permission.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS ''AS IS'' AND ANY
+  EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY
+  DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 */
 #include <Arduino.h>
 #include <floatToString.h>
@@ -136,7 +167,7 @@ int16_t roundTemperature(float Temp, bool goingUp, bool isCelsius) {
   //    70.375 and it will decrease to 69 at 69.374. Say instead the reading is 69.374, which
   //    is rounded to 69, and goingUp becomes false. The new threshold is: 0.5 + 0.125 = 0.625.
   //    The rounded temperature will now decrease one degree further to 68 at 68.624, but it
-  //    will not increase BACK to 70 until the temperature reaches 69.625. 
+  //    will not increase BACK to 70 until the temperature reaches 69.625.
   //
   // How do we round at a particular threshold such as .375? If we use the round() function,
   // this creates issues when the temperature crosses 0°. To avoid that, we will instead use
@@ -203,7 +234,7 @@ void readTemperature(const thermistor& Thermistor, temperature& Temp, bool turnA
   if (&Thermistor == &IndoorThermistor)
     Temp.Tc = FORCE_INDOOR_TEMP;
   #endif
-  
+
   // Force an outdoor temperature for debugging.
   #if FORCE_OUTDOOR_TEMP != 9999
   if (&Thermistor == &OutdoorThermistor)

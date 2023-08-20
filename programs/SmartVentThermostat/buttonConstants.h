@@ -1,6 +1,5 @@
 /*
-  fontsAndColors.cpp - Define Font_TT objects pointing to fonts imported from
-  the GFX font library.
+  buttonConstants.h - Constants used in initButton() calls.
   Created by Ted Toal, 17-Aug-2023
   Released into the public domain.
 
@@ -32,36 +31,32 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#include "fontsAndColors.h"
+#ifndef buttonConstants_h
+#define buttonConstants_h
 
-#include <Fonts/FreeMonoBold12pt7b.h>
-#include <Fonts/FreeSans9pt7b.h>
-#include <Fonts/FreeSans12pt7b.h>
-#include <Fonts/FreeSans18pt7b.h>
-#include <Fonts/FreeSans24pt7b.h>
-#include <Fonts/FreeSansBold9pt7b.h>
-#include <Fonts/FreeSansBold12pt7b.h>
-#include <Fonts/FreeSansBold18pt7b.h>
-#include <Fonts/FreeSansBold24pt7b.h>
-//#include <Fonts/Org_01.h>
-//#include <Fonts/Picopixel.h>
-//#include <Fonts/Tiny3x3a2pt7b.h>
-#include <Fonts/TomThumb.h>
+// Corner radius of buttons with rounded corners, in pixels.
+#define RAD 10
 
-Font_TT mono12B(&FreeMonoBold12pt7b);
-Font_TT font9(&FreeSans9pt7b);
-Font_TT font12(&FreeSans12pt7b);
-Font_TT font18(&FreeSans18pt7b);
-Font_TT font24(&FreeSans24pt7b);
-Font_TT font9B(&FreeSansBold9pt7b);
-Font_TT font12B(&FreeSansBold12pt7b);
-Font_TT font18B(&FreeSansBold18pt7b);
-Font_TT font24B(&FreeSansBold24pt7b);
-//Font_TT fontOrg(&Org_01);
-//Font_TT fontPico(&Picopixel);
-//Font_TT fontTiny(&Tiny3x3a2pt7b);
-Font_TT fontTom(&TomThumb);
+// Somewhat "standard" button width and height.
+#define BTN_WIDTH  110
+#define BTN_HEIGHT 40
 
-/////////////////////////////////////////////////////////////////////////////////////////////
-// End.
-/////////////////////////////////////////////////////////////////////////////////////////////
+// Negative button width/height values to use when creating buttons for the LCD display.
+// A negative width or height means that the button is sized for the initial text label
+// supplied for it, with the absolute value of the negative width or height ADDED to the
+// text size to get the full button size.
+#define ZEW 0   // Zero edge width
+#define TEW -1  // Tiny edge width
+#define SEW -5  // Small edge width
+#define MEW -10 // Medium edge width
+#define LEW -20 // Large edge width
+#define HEW -30 // Huge edge width
+
+// Values for expU, expD, expL, expR for button constructors.
+#define EXP_T 5   // Tiny expansion of button
+#define EXP_S 10  // Small expansion of button
+#define EXP_M 20  // Medium expansion of button
+#define EXP_L 30  // Large expansion of button
+#define EXP_H 50  // Huge expansion of button
+
+#endif // buttonConstants_h
