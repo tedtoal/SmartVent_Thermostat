@@ -42,28 +42,17 @@
 #include <TS_Display.h>
 #include <Button_TT.h>
 #include <Button_TT_collection.h>
-
-// Set this to 1 to enable debug output to the serial monitor.
-// Set this to 0 when releasing code to use without the IDE, USB port, and serial monitor.
-// ****** IF THERMOSTAT WON'T DISPLAY ANYTHING, DID YOU SET THIS TO 0 IF NO MONITOR PORT? ******
-#define USE_MONITOR_PORT 0
-
-// Default for _PWM_LOGLEVEL_ if not defined is 1, SAMD_PWM tries to log stuff to serial monitor.
-// If USE_MONITOR_PORT is defined as 0, we define _PWM_LOGLEVEL_ as 0 too.
-#if USE_MONITOR_PORT == 0
-#define _PWM_LOGLEVEL_ 0
-#else
-#define _PWM_LOGLEVEL_ 1
-#endif
-#include <SAMD_PWM.h>
-
-// Include local header files.
 #include "buttonConstants.h"
 #include "fontsAndColors.h"
 
 // *************************************************************************************** //
 // Constants.
 // *************************************************************************************** //
+
+// Set this to 1 to enable debug output to the serial monitor.
+// Set this to 0 when releasing code to use without the IDE, USB port, and serial monitor.
+// ****** IF THERMOSTAT WON'T DISPLAY ANYTHING, DID YOU SET THIS TO 0 IF NO MONITOR PORT? ******
+#define USE_MONITOR_PORT 0
 
 // Names to use on the display for indoors and outdoors.
 #define INDOOR_NAME "Indoor"
@@ -84,9 +73,6 @@ extern TS_Display* ts_display;
 
 // Button collection object to manage the buttons of the currently displayed screen.
 extern Button_TT_collection* screenButtons;
-
-// PWM object for sound from beeper.
-extern SAMD_PWM* sound;
 
 // SmartVent run timer. This counts by milliseconds whenever SmartVent is on (via
 // ON or AUTO mode). The count is clamped at a maximum of 99 hours, which should

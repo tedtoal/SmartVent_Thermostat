@@ -42,6 +42,15 @@
 #include "pinSettings.h"
 #include "screens.h"
 
+// Default for _PWM_LOGLEVEL_ if not defined is 1, SAMD_PWM tries to log stuff to serial monitor.
+// If USE_MONITOR_PORT is defined as 0, we define _PWM_LOGLEVEL_ as 0 too.
+#if USE_MONITOR_PORT == 0
+#define _PWM_LOGLEVEL_ 0
+#else
+#define _PWM_LOGLEVEL_ 1
+#endif
+#include <SAMD_PWM.h>
+
 // *************************************************************************************** //
 // Constants.
 // *************************************************************************************** //
@@ -52,7 +61,14 @@
 #define TS_TONE_DUTY    50
 
 // *************************************************************************************** //
-// Variables.
+// Local variables.
+// *************************************************************************************** //
+
+// PWM object for sound from beeper.
+static SAMD_PWM* sound;
+
+// *************************************************************************************** //
+// Global variables.
 // *************************************************************************************** //
 
 // LCD object.
@@ -103,6 +119,10 @@ void initScreens() {
   RunTimeMS = 0;
   MSatLastRunTimerUpdate = millis();
 
+  // Create PWM object for sound from beeper.
+  monitor.printf("sound object\n");
+  sound = new SAMD_PWM(BEEPER_PIN, TS_TONE_FREQ, 0);
+
   // Create LCD object, initialize its backlight and timers, and initialize actual displayed data.
   monitor.printf("lcd object\n");
   lcd = new Adafruit_ILI9341(LCD_CS, LCD_DC);
@@ -127,10 +147,6 @@ void initScreens() {
   // Create button collection object to manage currently displayed screen buttons.
   monitor.printf("screenButtons object\n");
   screenButtons = new Button_TT_collection;
-
-  // Create PWM object for sound from beeper.
-  monitor.printf("sound object\n");
-  sound = new SAMD_PWM(BEEPER_PIN, TS_TONE_FREQ, 0);
 
   monitor.printf("initScreens() done\n");
 }

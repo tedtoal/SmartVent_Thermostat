@@ -44,7 +44,7 @@
 #include <Button_TT_int16.h>
 #include "pinSettings.h"
 #include "nonvolatileSettings.h"
-#include "thermistorAndTemperature.h"
+#include "temperature.h"
 #include "screens.h"
 #include "screenMain.h"
 #include "screenAdvanced.h"

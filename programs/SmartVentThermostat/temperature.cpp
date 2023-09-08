@@ -1,6 +1,5 @@
 /*
-  thermistorAndTemperature.cpp
-  thermistorAndTemperature.cpp - Define variables and functions to support the
+  temperature.cpp - Define variables and functions to support the
   reading of indoor and outdoor temperatures from indoor and outdoor thermistors.
   Created by Ted Toal, 17-Aug-2023
   Released into the public domain.
@@ -35,7 +34,7 @@
 #include <Arduino.h>
 #include <floatToString.h>
 #include <monitor_printf.h>
-#include "thermistorAndTemperature.h"
+#include "temperature.h"
 #if USE_ANALOG_SAMD
 #include <wiring_analog_SAMD_TT.h>
 #endif

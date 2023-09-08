@@ -42,7 +42,7 @@
 #include <Button_TT_collection.h>
 #include <Button_TT_label.h>
 #include "nonvolatileSettings.h"
-#include "thermistorAndTemperature.h"
+#include "temperature.h"
 #include "screens.h"
 #include "screenDebug.h"
 #include "screenSpecial.h"

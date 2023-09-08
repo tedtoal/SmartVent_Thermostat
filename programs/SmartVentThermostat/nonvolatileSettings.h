@@ -90,7 +90,7 @@ struct nonvolatileSettings {
   uint8_t HysteresisWidth;      // Hysteresis °F, band around TempSetpointOn and DeltaTempForOn to turn on/off.
   uint8_t MaxRunTimeHours;      // Run time limit in hours (AUTO or ON mode, AUTO is cumulative), 0 = none
   uint8_t DeltaNewDayTemp;      // Outdoor temperature must exceed indoor by this to start a new day (run timer is cleared).
-  // Note: Following two values are NOT incorporated into temperatures read by thermistorAndTemperature library.
+  // Note: Following two values are NOT incorporated into temperatures read by temperature.h/.cpp.
   // Instead, they are only used to adjust curIndoorTemperature and curOutdoorTemperature before they are used in
   // SmartVentThermostat.ino.
   int8_t IndoorOffsetF;         // Amount to add to measured indoor temperature in °F to get temperature to display.

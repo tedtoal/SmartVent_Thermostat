@@ -20,7 +20,7 @@
 #include <floatToString.h>
 #include <msToString.h>
 #include "nonvolatileSettings.h"
-#include "thermistorAndTemperature.h"
+#include "temperature.h"
 #include "pinSettings.h"
 #include "screens.h"
 #include "screenAdvanced.h"
@@ -62,9 +62,9 @@
 // Amount of time to wait between each reading of indoor and outdoor temperatures.
 // The temperatures are stored in a buffer and the running average temperatures are
 // the values used to control SmartVent and to display on the screen. The number of
-// temperatures averaged is given in the thermistorAndTemperature.h file and is
-// currently 30. If we read temperatures once every two seconds, then the running
-// average is flushed over a period of one minute. That seems reasonable.
+// temperatures averaged is given in the temperature.h file and is currently 30.
+// If we read temperatures once every two seconds, then the running average is
+// flushed over a period of one minute. That seems reasonable.
 #define TEMPERATURE_READ_TIME_MS (2*1000)
 
 // Amount of time to wait after user exits Settings screen or touches the touchscreen,

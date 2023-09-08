@@ -1,5 +1,5 @@
 /*
-  thermistorAndTemperature.h - Define constants structs, variables, and
+  temperature.h - Define constants structs, variables, and
   functions to support the reading of indoor and outdoor temperatures from
   indoor and outdoor thermistors.
   Created by Ted Toal, 17-Aug-2023
@@ -32,8 +32,8 @@
   ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 */
-#ifndef thermistorAndTemperature_h
-#define thermistorAndTemperature_h
+#ifndef temperature_h
+#define temperature_h
 
 #include <Arduino.h>
 
@@ -434,4 +434,4 @@ extern void showTemperature(const temperature Temp, char* Desc);
 /////////////////////////////////////////////////////////////////////////////////////////////
 extern void readAndShowCurrentTemperatures(void);
 
-#endif // screenSpecial_h
+#endif // temperature_h

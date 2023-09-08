@@ -1,15 +1,19 @@
 import math
 
+#######################################################
 # Round x to 'digits' significant digits and return it.
+#######################################################
 def signif(x, digits=6):
   if x == 0 or not math.isfinite(x):
     return x
   digits -= math.ceil(math.log10(abs(x)))
   return round(x, digits)
 
+#######################################################
 # Functions to convert between Kelvin, Celsius, and Fahrenheit.
 # Degree argument can be a number or a list of numbers, and
 # the return value is a number or list, respectively.
+#######################################################
 def degFtoC(degF):
   if not isinstance(degF, list): return (degF-32)*5/9
   return [degFtoC(degF[i]) for i in range(len(degF))]
@@ -32,12 +36,14 @@ def degKtoC(degK):
 #print("-273.15  defKtoC(0) = " + str(degKtoC(0)))
 #print("-273.15 0  defKtoC([0, 273.15]) = " + str(degKtoC([0, 273.15])))
 
+#######################################################
 # Compute temperature T from thermistor resistances (rt, in ohms) and thermistor
 # coefficients A/B/C. The rt argument can be a number or a list of numbers, and
 # the return value is a number or list, respectively. Print the returned values
 # if printVals=True.
 #   T_C returns Celsius degrees
 #   T_F returns Fahrenheit degrees
+#######################################################
 def T_C(rt, A, B, C, printVals=True):
   if not isinstance(rt, list):
     TC = degKtoC(1/(A + B*math.log(rt) + C*math.log(rt)**3))
@@ -46,6 +52,7 @@ def T_C(rt, A, B, C, printVals=True):
       print(" " + str(TC))
     return TC
   return [T_C(rt[i], A, B, C, printVals) for i in range(len(rt))]
+
 def T_F(rt, A, B, C, printVals=True):
     TF = degCtoF(T_C(rt, A, B, C, False))
     TF = signif(TF, 4)
@@ -63,6 +70,7 @@ def T_F(rt, A, B, C, printVals=True):
 #    str(T_F([29490, 10000, 3893], A = 0.001029, B = 0.0002391, C = 1.566e-07)))
 
 
+#######################################################
 # Given Vadc = ADC value(s) of the voltage at the connection between an unknown
 # resistance Rt (the thermistor) and a series resistance rs, with a maximum ADC
 # reading of Vmax, this returns thermistor resistance Rt. Vout can be a number or
@@ -70,6 +78,7 @@ def T_F(rt, A, B, C, printVals=True):
 # thermistor resistance(s).
 # This assumes that the ADC reference voltage is at the other side of the
 # thermistor and that the other side of the series resistor is grounded.
+#######################################################
 def Rt_fromADCvalues(Vout, Vmax, rs):
   if not isinstance(Vout, list):
     return round(rs*(Vmax/Vout - 1))
@@ -79,10 +88,12 @@ def Rt_fromADCvalues(Vout, Vmax, rs):
 #print("12000, 230  Rt_fromADCvalues([465, 1000], 1023, 10000) = " +
 #    str(Rt_fromADCvalues([465, 1000], 1023, 10000)))
 
+#######################################################
 # Given a thermistor resistance rt, a series resistance rs, and a maximum ADC reading
 # of Vmax, this computes the ADC reading at the junction between the resistors.
 # The rt argument can be a number or list, and the return value is a number or
 # list of numbers, respectively, of ADC junction readings.
+#######################################################
 def Vout_ADC(rt, rs, Vmax):
   if not isinstance(rt, list):
     return round(Vmax*rs/(rs+rt))
@@ -91,10 +102,12 @@ def Vout_ADC(rt, rs, Vmax):
 #print("465  Vout_ADC(12000, 10000, 1023) = " + str(Vout_ADC(12000, 10000, 1023)))
 #print("1000, 465  Vout_ADC([230, 12000], 10000, 1023) = " + str(Vout_ADC([230, 12000], 10000, 1023)))
 
+#######################################################
 # Given temperature TC in Celsius and thermistor A/B/C coefficients, compute
 # expected thermistor resistance. The TC argument can be a number or a list of
 # numbers, and the return value is a number or list, respectively, of thermistor
 # resistance(s). Print returned values if printVals=True.
+#######################################################
 def Rt_fromTC_ABC(TC, A, B, C, printVals=True):
   if not isinstance(TC, list):
     y = (A-1/degCtoK(TC))/(2*C)
@@ -112,9 +125,11 @@ def Rt_fromTC_ABC(TC, A, B, C, printVals=True):
 #print("29542, 10017,  3899  Rt_fromTC_ABC([0, 25, 50], A = 0.001029, B = 0.0002391, C = 1.566e-07) = " +
 #    str(Rt_fromTC_ABC([0, 25, 50], A = 0.001029, B = 0.0002391, C = 1.566e-07)))
 
+#######################################################
 # Given TC[0:2] with three temperatures (in Celsius) and Rt[0:2] with 3 thermistor
 # resistances at those temperatures (in ohms), compute thermistor coefficients
 # A/B/C, returned in a list. Print values if printVals=True.
+#######################################################
 def ABCatRT(TC, Rt, printVals=True):
   L = [math.log(Rt[i]) for i in range(len(Rt))]
   Y = [1/degCtoK(TC[i]) for i in range(len(TC))]
