@@ -322,7 +322,7 @@ void updateSmartVentRunTimer(void) {
 void updateSmartVentOnOff(void) {
   uint32_t MaxRunTimeMS = activeSettings.MaxRunTimeHours * 3600000UL;
   bool isTimeout;
-  float indoorTempAdjusted, outdoorTempAdjusted, halfHysteresis;
+  float indoorTempAdjusted, outdoorTempAdjusted, hysteresis;
 
   switch (activeSettings.SmartVentMode) {
 
@@ -351,7 +351,7 @@ void updateSmartVentOnOff(void) {
   case MODE_AUTO:
     indoorTempAdjusted = curIndoorTemperature.Tf + (float)activeSettings.IndoorOffsetF;
     outdoorTempAdjusted = curOutdoorTemperature.Tf + (float)activeSettings.OutdoorOffsetF;
-    halfHysteresis = (float)activeSettings.HysteresisWidth / 2;
+    hysteresis = (float)activeSettings.Hysteresis;
 
     // If SmartVent is off and ArmState is ARM_AWAIT_ON and MaxRunTimeMS is 0 or is greater than
     // RunTimeMS, evaluate whether or not to turn SmartVent on.
@@ -359,8 +359,8 @@ void updateSmartVentOnOff(void) {
       // The condition to turn SmartVent on is: if the indoor temperature is above the indoor
       // temperature setpoint plus hysteresis AND the outdoor temperature is at or below the
       // indoor temperature minus the on-delta value required for activation minus hysteresis.
-      bool turnOn = (indoorTempAdjusted > ((float)activeSettings.TempSetpointOn + halfHysteresis)) &&
-        (outdoorTempAdjusted <= (indoorTempAdjusted - (float)activeSettings.DeltaTempForOn - halfHysteresis));
+      bool turnOn = (indoorTempAdjusted > ((float)activeSettings.TempSetpointOn + hysteresis)) &&
+        (outdoorTempAdjusted <= (indoorTempAdjusted - (float)activeSettings.DeltaTempForOn - hysteresis));
       // If the turn-on condition was satisfied, turn SmartVent on and change ArmState to ARM_AUTO_ON.
       if (turnOn) {
         setSmartVent(true);
@@ -373,8 +373,8 @@ void updateSmartVentOnOff(void) {
       // The condition to keep SmartVent on is almost the same as the condition to turn it on,
       // except that the hysteresis is reversed.
       // Note that the hysteresis ensures that it doesn't flip-flop on and off repeatedly in a short time interval.
-      bool keepOn = (indoorTempAdjusted > ((float)activeSettings.TempSetpointOn - halfHysteresis)) &&
-        (outdoorTempAdjusted <= (indoorTempAdjusted - (float)activeSettings.DeltaTempForOn + halfHysteresis));
+      bool keepOn = (indoorTempAdjusted > ((float)activeSettings.TempSetpointOn - hysteresis)) &&
+        (outdoorTempAdjusted <= (indoorTempAdjusted - (float)activeSettings.DeltaTempForOn + hysteresis));
       // If the keep-on condition was NOT satisfied, turn SmartVent off and change ArmState to ARM_AWAIT_ON.
       // Note that SmartVent will turn on again if the turn-on condition is again met, and in that case, the
       // total on-time accumulates up to the maximum on time, if one was set.

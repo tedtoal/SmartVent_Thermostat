@@ -59,7 +59,7 @@
 //  -	indoor setpoint temperature for SmartVent
 //  - degrees (delta) of difference between indoor temperature and cooler outdoor
 //      temperature to turn SmartVent on
-//  - degrees (band) of hysteresis, width around both the indoor setpoint temperature
+//  - degrees (band) of hysteresis, +/- around both the indoor setpoint temperature
 //      AND the difference between indoor and outdoor temperature, to turn SmartVent on/off
 //  -	run time limit
 //  - Cancel button
@@ -82,9 +82,9 @@ static Button_TT_arrow btn_DeltaTempForOnLeft("DeltaLeft");
 static Button_TT_arrow btn_DeltaTempForOnRight("DeltaRight");
 static Button_TT_label label_Hysteresis1("Hysteresis1");
 static Button_TT_label label_Hysteresis2("Hysteresis2");
-static Button_TT_uint8 field_HysteresisWidth("Hysteresis");
-static Button_TT_arrow btn_HysteresisWidthLeft("HysteresisLeft");
-static Button_TT_arrow btn_HysteresisWidthRight("HysteresisRight");
+static Button_TT_uint8 field_Hysteresis("Hysteresis");
+static Button_TT_arrow btn_HysteresisLeft("HysteresisLeft");
+static Button_TT_arrow btn_HysteresisRight("HysteresisRight");
 static Button_TT_label label_MaxRun1("MaxRun1");
 static Button_TT_label label_MaxRun2("MaxRun2");
 static Button_TT_uint8 field_MaxRunTime("MaxRunTime");
@@ -110,7 +110,7 @@ static void showTemperatureSetpoint(bool forceDraw = false) {
 /////////////////////////////////////////////////////////////////////////////////////////////
 static void showTemperatureDifferentials(bool forceDraw = false) {
   field_DeltaTempForOn.setValueAndDrawIfChanged(userSettings.DeltaTempForOn, forceDraw);
-  field_HysteresisWidth.setValueAndDrawIfChanged(userSettings.HysteresisWidth, forceDraw);
+  field_Hysteresis.setValueAndDrawIfChanged(userSettings.Hysteresis, forceDraw);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -141,8 +141,8 @@ static void btnTap_DeltaTempForOn(Button_TT& btn) {
 /////////////////////////////////////////////////////////////////////////////////////////////
 // Handle press of left or right arrow for SmartVent-Off temperature differential.
 /////////////////////////////////////////////////////////////////////////////////////////////
-static void btnTap_HysteresisWidth(Button_TT& btn) {
-  field_HysteresisWidth.valueIncDec(1, &btn);
+static void btnTap_Hysteresis(Button_TT& btn) {
+  field_Hysteresis.valueIncDec(1, &btn);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -168,7 +168,7 @@ static void btnTap_SettingsCancel(Button_TT& btn) {
 static void btnTap_SettingsSave(Button_TT& btn) {
   userSettings.TempSetpointOn = field_TempSetpointOn.getValue();
   userSettings.DeltaTempForOn = field_DeltaTempForOn.getValue();
-  userSettings.HysteresisWidth = field_HysteresisWidth.getValue();
+  userSettings.Hysteresis = field_Hysteresis.getValue();
   const char* pValue = field_MaxRunTime.getLabel();
   if (strcmp(pValue, MAX_RUN_TIME_0) == 0)
     userSettings.MaxRunTimeHours = 0;
@@ -212,12 +212,12 @@ void initSettingsScreen(void) {
   label_Hysteresis1.initButton(lcd, "TL", 5, 148, 90, SEW, CLEAR, CLEAR, MAROON,
     "CR", "Overshoot", false, &font9B);
   label_Hysteresis2.initButton(lcd, "TL", 5, 168, 90, SEW, CLEAR, CLEAR, MAROON,
-    "CR", "width", false, &font9B);
-  field_HysteresisWidth.initButton(lcd, "TR", 150, 155, TEW, TEW, WHITE, WHITE, NAVY,
+    "CR", "+ or -", false, &font9B);
+  field_Hysteresis.initButton(lcd, "TR", 150, 155, TEW, TEW, WHITE, WHITE, NAVY,
     "CR", &font18B, 0, 0, MIN_TEMP_HYSTERESIS, MAX_TEMP_HYSTERESIS, true);
-  btn_HysteresisWidthLeft.initButton(lcd, 'L', "TL", 158, 146, 43, 37, BLACK, PINK,
+  btn_HysteresisLeft.initButton(lcd, 'L', "TL", 158, 146, 43, 37, BLACK, PINK,
     0, 0, EXP_H, 0);
-  btn_HysteresisWidthRight.initButton(lcd, 'R', "TL", 195, 146, 43, 37, BLACK, PINK,
+  btn_HysteresisRight.initButton(lcd, 'R', "TL", 195, 146, 43, 37, BLACK, PINK,
     0, 0, 0, EXP_H);
 
   label_MaxRun1.initButton(lcd, "TL", 5, 216, 50, SEW, CLEAR, CLEAR, MAROON,
@@ -267,10 +267,10 @@ void drawSettingsScreen() {
 
   label_Hysteresis1.drawButton();
   label_Hysteresis2.drawButton();
-  btn_HysteresisWidthLeft.drawButton();
-  btn_HysteresisWidthRight.drawButton();
-  screenButtons->registerButton(btn_HysteresisWidthLeft, btnTap_HysteresisWidth);
-  screenButtons->registerButton(btn_HysteresisWidthRight, btnTap_HysteresisWidth);
+  btn_HysteresisLeft.drawButton();
+  btn_HysteresisRight.drawButton();
+  screenButtons->registerButton(btn_HysteresisLeft, btnTap_Hysteresis);
+  screenButtons->registerButton(btn_HysteresisRight, btnTap_Hysteresis);
 
   showTemperatureDifferentials(true);
 

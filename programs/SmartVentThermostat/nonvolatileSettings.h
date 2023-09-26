@@ -50,8 +50,10 @@
 #define MAX_TEMP_DIFFERENTIAL 20
 
 // Minimum and maximum SmartVent-off temperature hysteresis in degrees F.
-// The hysteresis is subtracted from both the indoor setpoint and the indoor/outdoor
-// differential to get the values used to decide when to turn SmartVent off.
+// The hysteresis is subtracted from the indoor setpoint to get the setpoint used to
+// decide when to turn SmartVent off, and added to it to decide when to turn it on.
+// It is added to the indoor/outdoor differential to get the value used to decide
+// when to turn SmartVent on, and subtracted from it to decide when to turn it off.
 #define MIN_TEMP_HYSTERESIS 1
 #define MAX_TEMP_HYSTERESIS 9
 
@@ -87,7 +89,7 @@ struct nonvolatileSettings {
   eSmartVentMode SmartVentMode; // SmartVent mode
   uint8_t TempSetpointOn;       // Indoor temperature setpoint in °F for SmartVent to turn on.
   uint8_t DeltaTempForOn;       // Indoor temperature must exceed outdoor by this to turn on SmartVent.
-  uint8_t HysteresisWidth;      // Hysteresis °F, band around TempSetpointOn and DeltaTempForOn to turn on/off.
+  uint8_t Hysteresis;           // Hysteresis °F, +/- this around TempSetpointOn and DeltaTempForOn to turn on/off.
   uint8_t MaxRunTimeHours;      // Run time limit in hours (AUTO or ON mode, AUTO is cumulative), 0 = none
   uint8_t DeltaNewDayTemp;      // Outdoor temperature must exceed indoor by this to start a new day (run timer is cleared).
   // Note: Following two values are NOT incorporated into temperatures read by temperature.h/.cpp.

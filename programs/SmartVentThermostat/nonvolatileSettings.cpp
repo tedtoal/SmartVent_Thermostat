@@ -65,7 +65,7 @@ nonvolatileSettings settingDefaults = {
   MODE_OFF,   // SmartVentMode: SmartVent mode
   76,         // TempSetpointOn: Indoor temperature setpoint in °F for SmartVent to turn on.
   6,          // DeltaTempForOn: °F indoor must exceed outdoor temperature to turn on SmartVent.
-  2,          // HysteresisWidth: Hysteresis °F, band around TempSetpointOn and DeltaTempForOn to turn on/off.
+  1,          // Hysteresis: Hysteresis °F, +/- around TempSetpointOn and DeltaTempForOn to turn on/off.
   4,          // MaxRunTimeHours: Run time limit in hours in AUTO mode, 0 = none
   1,          // DeltaNewDayTemp: °F outdoor must exceed indoor temperature to start a new day (run timer is cleared).
   0,          // IndoorOffsetF: Amount to add to measured indoor temperature in °F to get temperature to display.

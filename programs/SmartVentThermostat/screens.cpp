@@ -83,9 +83,6 @@ TS_Display* ts_display;
 // Button collection object to manage the buttons of the currently displayed screen.
 Button_TT_collection* screenButtons;
 
-// PWM object for sound from beeper.
-SAMD_PWM* sound;
-
 // SmartVent run timer.
 uint32_t RunTimeMS;
 uint32_t MSatLastRunTimerUpdate;
